@@ -6,25 +6,44 @@
 rm(list  = ls())
 library(nloptr)
 library(foreign)
-library(dplyr)
 library(foreach)
 library(doSNOW)
-#library(doRNG)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set Path
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setwd("/home/138/kl6140/disttest")
-source('Rfunctions.R')
+os       = Sys.info()['sysname']
+release  = Sys.info()['release']
+user     = Sys.getenv("USERNAME")
+
+if (os == "Darwin") {
+  setwd("~/Dropbox/Working/entry/data/created/disttest")
+  source('../../../Code/Rfunctions.R')
+} else if (os == "Linux") {
+  setwd("/home/138/kl6140/disttest")
+  source('Rfunctions.R')
+} else {
+  setwd("D:/Dropbox/Working/entry/data/created/disttest")
+  source('../../../Code/Rfunctions.R')
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set Path
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 load("est.Rdata")
-n    <- 1000
-nsim <- n*6
-nc   <- 12
+n    <- 20
+nc   <- 16
 ftol <- 1e-6
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Read Input
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+args    <- commandArgs()
+args    <- as.numeric(args[4])
+minn    <- (args - 1)*n + 1
+maxn    <- (args - 1)*n + n
+minnsim <- (minn-1)*6 + 1
+maxnsim <- maxn*6
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Standard Errors
@@ -39,7 +58,7 @@ progress <- function(n) setTxtProgressBar(pb, n)
 opts <- list(progress = progress)
 
 ptm <- proc.time()
-bootest <- foreach(i = 1:nsim, .combine = rbind, .options.snow = opts) %dopar%
+bootest <- foreach(i = minnsim:maxnsim, .combine = rbind, .options.snow = opts) %dopar%
   { 
     s <- bootwrapper(i,data,est,ftol)
     return(s)
@@ -49,7 +68,8 @@ close(pb)
 stopCluster(cl)
 proc.time() - ptm
 
-#rm(list=ls()[! ls() %in% c("ini","est","bootest","data")])
-#write.dta(as.data.frame(est),"est.dta")
-#write.dta(as.data.frame(bootest),"bootest.dta")
-save.image("estboot.RData")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Output File
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+outfile <- paste("estboot",args,".RData",sep="")
+save.image(outfile)

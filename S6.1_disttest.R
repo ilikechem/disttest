@@ -11,8 +11,20 @@ library(doSNOW)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set Path
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setwd("/home/138/kl6140/disttest")
-source('Rfunctions.R')
+os       = Sys.info()['sysname']
+release  = Sys.info()['release']
+user     = Sys.getenv("USERNAME")
+
+if (os == "Darwin") {
+  setwd("~/Dropbox/Working/entry/data/created/disttest")
+  source('../../../Code/Rfunctions.R')
+} else if (os == "Linux") {
+  setwd("/home/138/kl6140/disttest")
+  source('Rfunctions.R')
+} else {
+  setwd("D:/Dropbox/Working/entry/data/created/disttest")
+  source('../../../Code/Rfunctions.R')
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Load Data
@@ -26,7 +38,7 @@ ftol       <- 1e-6
 #Estimation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nsim <- 6 
-nc   <- 6
+nc   <- 16
 pb <- txtProgressBar(max = nsim, style = 3)
 progress <- function(n) setTxtProgressBar(pb, n)
 opts <- list(progress = progress)
