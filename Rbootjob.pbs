@@ -1,0 +1,7 @@
+#!/bin/csh
+#PBS -l wd
+#PBS -q normal
+#PBS -l walltime=24:00:00,mem=32Gb,ncpus=16
+setenv OMP_NUM_THREADS PBS_NCPUS
+module load R/3.6.1
+R --vanilla -f S6.2_bootstrap.R ${INDEX} >S2_output_${INDEX}

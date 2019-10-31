@@ -1,0 +1,7 @@
+#!/bin/csh
+#PBS -l wd
+#PBS -q normal
+#PBS -l walltime=01:00:00,mem=8Gb,ncpus=16
+setenv OMP_NUM_THREADS PBS_NCPUS
+module load R/3.6.1
+R --vanilla -f S6.1_disttest.R >S1_output
