@@ -14,7 +14,7 @@ library(doSNOW)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Set Path
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setwd("C:/Users/kl/Desktop/disttest")
+setwd("/home/138/kl6140/disttest")
 source('Rfunctions.R')
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
